@@ -2,7 +2,6 @@ define ['droplet-helper', 'droplet-model', 'droplet-parser'], (helper, model, pa
   exports = {}
   exports.CsvParser = class CsvParser extends parser.Parser
     constructor: (@text, @opts = {}) ->
-        console.log "OK"
         super
         
     CsvParser.empty = "\"\""
@@ -11,7 +10,6 @@ define ['droplet-helper', 'droplet-model', 'droplet-parser'], (helper, model, pa
       @tree = @parseText()
       for block in @tree
         @mark 0, block.block, 0
-      console.log 'PROGRAAAAAAAAAAAM IS', JSON.stringify @tree, null, 2
     
     parseText: ->
       lines = @text.split '\n'
@@ -66,29 +64,24 @@ define ['droplet-helper', 'droplet-model', 'droplet-parser'], (helper, model, pa
         socketLevel: helper.ANY_DROP
     
     addCsvSocket: (bounds, depth) ->
-      console.log "ADDING SOCKET"
       @addSocket
         bounds: bounds
         depth: depth
         precedence: 0
 
     addCsvIndent: (bounds, depth) ->
-      console.log "INDENTGED"
       @addIndent
         bounds: bounds
         depth: depth
-      console.log "DONE INTEND"
+
      
     mark: (indentDepth, node, depth) ->
-      console.log "MARKING ", node.type
-      console.log 'BLOCK IS', JSON.stringify node, null, 2
       switch node.type
         when "block"
           @addCsvBlock node.location, depth
           for children in node.children
             @mark indentDepth + 1, children.socket, depth + 1 
         when "socket" 
-          console.log "SOCKETING"
           @addCsvSocket node.location, depth
           #@addCsvIndent node.location, depth          
     isComment: (text) ->
